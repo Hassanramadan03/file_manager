@@ -1,0 +1,30 @@
+version: '3'
+services:
+  file_manager:
+    build: ./file_manager
+    container_name: file_manager
+    ports:
+      - "4000:80"
+    environment:
+      - PORT=80
+      - END_POINT=${END_POINT}
+      - ACCESS_KEY=${ACCESS_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - BUCKET_NAME=${BUCKET_NAME}
+    networks:
+      - default 
+    volumes:
+      - ./file_manager/src:/service/src
+  nginx:
+    build: ./nginx
+    ports:
+      - "8080:80"
+    links:
+      - file_manager
+    depends_on:
+      - file_manager
+    networks:
+      - default
+networks:
+  default:
+    driver: bridge
